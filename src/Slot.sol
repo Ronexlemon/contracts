@@ -110,4 +110,19 @@ function shiftEForValue()external  view returns(bytes32 e, uint val){
 
     }
 }
+//write to storage
+function writeToE(uint _newE)external returns(bytes32 value,bytes32 clearedE, bytes32 newV, bytes32 shifted)  {
+    assembly{
+        //get slot
+        value:= sload(E.slot)
+        //the cleared E
+        clearedE:=and(0xff0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff,value)
+        shifted := shl(mul(E.offset,8),_newE)
+        newV := or(clearedE,shifted)
+        sstore(E.slot,newV)
+
+        //
+    }
+
+}
 }

@@ -22,4 +22,32 @@ contract BITWISE{
     function not (uint256 x)external  pure returns (uint256) {
         return ~x;
     }
+    //shift left
+    /**
+    *1 << 0 = 0001 -->0001 =1
+    *1 << 1 =0001 --> 0010 = 2
+    *1 <<2 =0001 --> 0100 =4
+    *1 << 3 = 0001 --> 1000 = 8
+    *3 <<2 = 0011 --> 1100 =12
+    *4 <<2 = 000000101 -->00010100 = (2^4)+(2^2) =16+4 =>20
+    */
+    function shiftLeft(uint256 x, uint256 bits)external pure returns (uint256){
+        return  x << bits;
+    }
+    //extracting  the last n bits
+    function getLastNBits(uint256 x, uint256 n)external  pure returns(uint256){
+        uint mask =(1<<n)-1;
+        //let x be 12 and n 3
+        //mask => (1 << 3) => 00000001 -> 00001000 -> 8 -1 => 7 => 00000111
+        //x & mask -> 00001100 & 00000111 ->000001100 
+        return x & mask;
+    }
+
+    function getLastNBitsUsingModulo(uint256 x, uint256 n)external  pure returns(uint256){
+        //let x = 12 and n 3
+        //  (1 << 3) => 00000001 -> 00001000 -> 8 -1 => 7 => 00000111
+        //000001100 % 00000111 =>1100
+        return x % (1<<n);
+    }
+    //finding the most significant bi
 }

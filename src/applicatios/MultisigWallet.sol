@@ -9,6 +9,7 @@ contract MultisigWallet{
     event ExecuteTransaction(address indexed  owner,uint256 indexed  txIndex);
      address[] public owners;
     mapping(address => bool)public isOwner;
+    mapping(uint256 tx=>mapping(address owner => bool))public isconfrimed;
 
     uint256 numConfrimationRequired;
 
@@ -18,6 +19,27 @@ contract MultisigWallet{
         bytes data;
         bool executed;
         uint256 numConfrimaions;
+    }
+    Transaction[] public transactions;
+
+    modifier onlyOwner(){
+        require(isOwner[msg.sender],"only Owner");
+        _;
+    }
+
+    modifier txExists(uint256 _txIndex){
+        require(_txIndex < transactions.length,"tx does not exists");
+        _;
+    }
+
+    modifier notExecuted(uint256 _txIndex){
+        require(!transactions[_txIndex].executed,"tx Aready Executed");
+        _;
+    }
+
+    modifier notConfrimed(uint256 _txIndex){
+        require(!isconfrimed[_txIndex][msg.sender],"already Confirmed");
+        _;
     }
 
 }

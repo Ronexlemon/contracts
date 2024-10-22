@@ -42,4 +42,20 @@ contract MultisigWallet{
         _;
     }
 
+constructor(address[] memory _owners,uint256 _numConfirmationsRequired){
+        require(_owners.length >0, "owners required");
+        require(_numConfirmationsRequired >0 && _numConfirmationsRequired <= _owners.length,"Invalid Number of confirmations");
+        for (uint256 i=0; i< _owners.length;i++){
+            address owner = _owners[i];
+
+            require(owner !=address(0),"invalid Address");
+            require(!isOwner[owner], "owner not unique");
+            isOwner[owner] = true;
+            owners.push(owner);
+        }
+
+        numConfrimationRequired = _numConfirmationsRequired;
+
+    }
+
 }

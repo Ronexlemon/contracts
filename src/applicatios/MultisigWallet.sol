@@ -57,5 +57,8 @@ constructor(address[] memory _owners,uint256 _numConfirmationsRequired){
         numConfrimationRequired = _numConfirmationsRequired;
 
     }
+    receive() external payable {
+        emit Deposit({sender:msg.sender, amount:msg.value, balance:address(this).balance});
+     }
 
 }

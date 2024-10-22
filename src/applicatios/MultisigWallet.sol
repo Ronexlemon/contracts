@@ -61,4 +61,40 @@ constructor(address[] memory _owners,uint256 _numConfirmationsRequired){
         emit Deposit({sender:msg.sender, amount:msg.value, balance:address(this).balance});
      }
 
+     function submitTransaction(address _to,uint256 _value,bytes memory _data)public onlyOwner{
+        uint256 txIndex = transactions.length;
+
+        transactions.push(Transaction({to:_to,value:_value,data:_data,executed:false,numConfrimaions:0}));
+        emit SubmitTraction({owner:msg.sender, txIndex:txIndex, to:_to, value:_value, data:_data});
+     }
+
+     function confirmTransaction(uint256 _txIndex)public  onlyOwner notConfrimed(_txIndex) txExists(_txIndex) notExecuted(_txIndex){
+        Transaction storage transaction = transactions[_txIndex];
+
+        transaction.numConfrimaions +=1;
+        isconfrimed[_txIndex][msg.sender] = true;
+        emit confrimTransaction({onwer:msg.sender, txIndex:_txIndex});
+     }
+
+     function executeTransaction(uint256 _txIndex)public  onlyOwner txExists(_txIndex)notExecuted(_txIndex){
+        Transaction storage transaction = transactions[_txIndex];
+
+        require(transaction.numConfrimaions >= numConfrimationRequired,"cannot execute tx");
+
+        transaction.executed = true;
+        (bool success,) = transaction.to.call{value: transaction.value}(transaction.data);
+        require(success, "tx failed");
+        emit ExecuteTransaction({owner:msg.sender, txIndex:_txIndex});
+     }
+     function revokeConfirmation(uint256 _txIndex)public  onlyOwner txExists(_txIndex) notExecuted(_txIndex){
+        Transaction storage transaction = transactions[_txIndex];
+
+        require(isconfrimed[_txIndex][msg.sender],"tx not Confrimed");
+
+        transaction.numConfrimaions -=1;
+        isconfrimed[_txIndex][msg.sender] = false;
+
+        emit RevokeConfirmation({owner:msg.sender, txIndex:_txIndex});
+     }
+
 }

@@ -97,4 +97,14 @@ constructor(address[] memory _owners,uint256 _numConfirmationsRequired){
         emit RevokeConfirmation({owner:msg.sender, txIndex:_txIndex});
      }
 
+function getOnwers()public view returns(address[] memory){
+        return owners;
+     }
+     function getTransactioncount()public view  returns (uint256){
+        return transactions.length;
+     }
+
+     function getTransaction(uint256 _txIndex)public view returns(Transaction memory){
+        return transactions[_txIndex];
+     }
 }

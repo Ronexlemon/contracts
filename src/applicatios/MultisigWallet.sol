@@ -12,4 +12,12 @@ contract MultisigWallet{
 
     uint256 numConfrimationRequired;
 
+    struct Transaction{
+        address to;
+        uint256 value;
+        bytes data;
+        bool executed;
+        uint256 numConfrimaions;
+    }
+
 }
